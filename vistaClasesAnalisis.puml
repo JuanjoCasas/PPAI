@@ -1,0 +1,60 @@
+@startuml clases
+
+class Pantalla <<boundary>> {
+    - listaBodegas
+    - lblBodegas
+    - bodegaElegida
+    + opcionImportarVinosBodega()
+    + habilitarVentana()
+}
+
+class Gestor <<control>> {
+    - bodegas
+    - bodegaElegida
+}
+
+class Bodega <<entity>> {
+    - coordenadasUbicacion[]
+    - descripcion
+    - historia
+    - nombre
+    - periodoActualizacion
+    + contarReseñas()
+    + mostrarTodosVinos()
+}
+
+class Vino <<entity>> {
+    - añada
+    - imagenEtiqueta
+    - nombre
+    - notaDeCataBodega
+    - precioARS
+    + calcularRanking()
+    + compararEtiqueta()
+    + esDeBodega()
+    + esDeRegionVitivinicola()
+}
+
+class Siguiendo <<entity>> {
+    - fechaFin
+    - fechaInicio
+    + sosDeAmigo()
+    + sosDeBodega()
+    + sosDeSomelier()
+}
+
+class Enofilo <<entity>> {
+    - apellido
+    - imagenPerfil
+    - nombre
+    + mostrarAmigosSeguidos()
+    +mostrarColeccionFavoritos()
+}
+
+Pantalla --> Gestor
+Gestor --> Bodega
+Vino -> "1" Bodega
+Siguiendo --> "0..1" Bodega
+Siguiendo -> "0..1" Enofilo
+Enofilo -> "0..*" Vino
+@enduml
