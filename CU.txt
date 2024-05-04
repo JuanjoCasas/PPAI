@@ -1,0 +1,36 @@
+5 Importar actualización de vinos de bodega
+
+Incorporar información de nuevos vinos o actualizaciones
+de vinos desde los sistemas de las bodega cuyos datos
+fueron registrados previamente.
+
+AP: Administrador de
+Bonvino
+AS: Sistema de bodega
+
+Objetivo: Incorporar información de nuevos vinos o actualizaciones de vinos desde los sistemas de
+las bodegas, cuyo datos fueron registrados previamente.
+Flujo Básico: Importación de novedades de vino de una bodega.
+1. AB: Selecciona la opción “Importar actualización de vinos de bodega”
+2. Sistema: Busca y muestra todas las bodegas que tienen actualizaciones disponibles (ver
+observación 1).
+3. Sistema: Solicita que se seleccionen las bodegas que se desea actualizar.
+4. AB: Selecciona una bodega.
+5. Sistema: Se conecta con el sistema de bodega, y obtiene las actualizaciones de la bodega
+seleccionada (ver observación 2).
+6. Sistema: Actualiza las novedades importadas del sistema de bodega y muestra un resumen de
+los vinos creados y/o actualizados. (ver observación 3).
+7. Sistema: Envía una notificación push a todos los enófilos suscriptos a la bodega con las
+novedades importadas. Fin de CU.
+Flujos Alternativos
+A1: No hay bodegas con actualizaciones disponibles.
+A2: AB selecciona varias bodegas.
+A3: El sistema externo de bodegas no da respuesta.
+Observaciones:
+1. Las bodegas tienen una periodicidad en la que pondrán a disposición las actualizaciones sobre
+sus vinos. Esta periodicidad estará en formato meses; por ejemplo, si la periodicidad es de dos
+meses, quiere decir que cada dos meses la bodega enviará actualizaciones.
+2. Todas las bodegas tienen expuestas para su consulta una API REST desde la que el sistema
+obtiene las novedades sobre vinos.
+3. Por cada bodega se debe mostrar nombre, el listado de vinos actualizado con sus características,
+para el periodo.
