@@ -5,48 +5,60 @@ mainframe sd 5 Importar actualización de vinos de bodega
     boundary ":PantImpVinos" as pantalla #LightBlue
     control ":GestorImpVinos" as controlador #LightBlue
     entity ":Bodega" as bodegas #Orange
-    entity "seleccionado:Bodega" as objeto #LightBlue
-    actor ":Sistema de bodega" as sisBod #LightBlue
+    entity "seleccionado:Bodega" as bodega #LightBlue
+    actor ":Sistema de bodega" as api #LightBlue
+    entity ":Vino" as vinos #Orange
 
     activate AB #LightBlue
 
-        AB -> pantalla :  opcionImportarVinosBodega()
-        activate pantalla #LightBlue
+        AB -> pantalla ++ #LightBlue :  opcionImportarVinosBodega()
 
-            pantalla -> pantalla : habilitarVentana()
-            activate pantalla #LightBlue 
+            pantalla -> pantalla ++ #LightBlue : habilitarVentana()
+
             deactivate pantalla 
 
-            pantalla -> controlador : importarActualizacionVinosBodega()
-            activate controlador #LightBlue
+            pantalla -> controlador ++ #LightBlue : importarActualizacionVinosBodega()
 
-                controlador -> controlador : buscarBodegas()
-                activate controlador #LightBlue
+
+                controlador -> controlador ++ #LightBlue : buscarBodegas()
+
                 deactivate controlador
 
-                controlador -> bodegas : *getPeriodoActualizacion()
-                activate bodegas #Orange
+                controlador -> bodegas ++ #Orange : *getPeriodoActualizacion()
+                deactivate bodegas
+                controlador -> bodegas ++ #Orange : *getNombre()
                 deactivate bodegas
 
-                controlador -> bodegas : *getNombre()
-                activate bodegas #Orange
-                deactivate bodegas
-
-                controlador -> pantalla : pedirSeleccionBodega()
-                activate pantalla #LightBlue
+                controlador -> pantalla ++ #LightBlue : pedirSeleccionBodega()
                 deactivate pantalla
             deactivate controlador
         deactivate pantalla
     
-        AB -> pantalla : tomarSeleccionBodega()
-        activate pantalla #LightBlue
-            pantalla -> controlador : tomarSeleccionBodega()
-            activate controlador #LightBlue
-                activate pantalla #LightBlue
-                deactivate pantalla
-                controlador -> controlador : finCU()
-                activate controlador #LightBlue
+        AB -> pantalla ++ #LightBlue : tomarSeleccionBodega()
+            pantalla -> controlador ++ #LightBlue : tomarSeleccionBodega()
+                controlador -> controlador ++ #LightBlue : buscarActualizacionesBodega()
                 deactivate controlador
+
+                controlador -> bodega ++ #LightBlue : buscarActualizacionesBodega()
+                    bodega -> api ++ #LightBlue : getVinos()
+                    deactivate api
+                deactivate bodega
+
+                loop Mientras haya vinos para cargar
+                    controlador -> vinos ++ #Orange : * extisteVino()
+                    deactivate vinos
+
+                    controlador -> bodega ++ #LightBlue : crearVino()
+                        entity "nuevo:Vino" as nvino
+                        bodega -> nvino ** : new()
+                        
+                    deactivate bodega
+                end
+
+                controlador -> pantalla : mostrarListadoVinosImportados()
+
+                controlador -> controlador ++ #LightBlue : finCU()
+                deactivate controlador                
             deactivate controlador
         deactivate pantalla
     deactivate AB
