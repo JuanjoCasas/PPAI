@@ -1,0 +1,53 @@
+@startuml principal
+skinparam sequenceParticipant underline
+mainframe sd 5 Importar actualización de vinos de bodega
+    actor ":Administrador de Bonvino" as AB #LightBlue
+    boundary ":PantImpVinos" as pantalla #LightBlue
+    control ":GestorImpVinos" as controlador #LightBlue
+    entity ":Bodega" as bodegas #Orange
+    entity "seleccionado:Bodega" as objeto #LightBlue
+    actor ":Sistema de bodega" as sisBod #LightBlue
+
+    activate AB #LightBlue
+
+        AB -> pantalla :  opcionImportarVinosBodega()
+        activate pantalla #LightBlue
+
+            pantalla -> pantalla : habilitarVentana()
+            activate pantalla #LightBlue 
+            deactivate pantalla 
+
+            pantalla -> controlador : importarActualizacionVinosBodega()
+            activate controlador #LightBlue
+
+                controlador -> controlador : buscarBodegas()
+                activate controlador #LightBlue
+                deactivate controlador
+
+                controlador -> bodegas : *getPeriodoActualizacion()
+                activate bodegas #Orange
+                deactivate bodegas
+
+                controlador -> bodegas : *getNombre()
+                activate bodegas #Orange
+                deactivate bodegas
+
+                controlador -> pantalla : pedirSeleccionBodega()
+                activate pantalla #LightBlue
+                deactivate pantalla
+            deactivate controlador
+        deactivate pantalla
+    
+        AB -> pantalla : tomarSeleccionBodega()
+        activate pantalla #LightBlue
+            pantalla -> controlador : tomarSeleccionBodega()
+            activate controlador #LightBlue
+                activate pantalla #LightBlue
+                deactivate pantalla
+                controlador -> controlador : finCU()
+                activate controlador #LightBlue
+                deactivate controlador
+            deactivate controlador
+        deactivate pantalla
+    deactivate AB
+@enduml

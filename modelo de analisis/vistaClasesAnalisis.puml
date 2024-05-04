@@ -1,0 +1,73 @@
+@startuml clases
+
+class PantImpVinos <<boundary>> {
+    - listaBodegas
+    - lblBodegas
+    - bodegaElegida
+    + opcionImportarVinosBodega()
+    + habilitarVentana()
+    + pedirSeleccionBodega()
+    + tomarSeleccionBodega()
+    
+}
+
+class GestorImpVinos <<control>> {
+    - bodegas
+    - bodegaElegida
+    + importarActualizacionVinosBodega()
+    + buscarBodegas()
+    + tomarSeleccionBodega()
+
+
+    + finCU()
+}
+
+class Bodega <<entity>> {
+    - coordenadasUbicacion[]
+    - descripcion
+    - historia
+    - nombre
+    - periodoActualizacion
+    + contarReseñas()
+    + mostrarTodosVinos()
+    + getNombre()
+    + getPeriodoActualizacion()
+}
+
+class Vino <<entity>> {
+    - añada
+    - imagenEtiqueta
+    - nombre
+    - notaDeCataBodega
+    - precioARS
+    + calcularRanking()
+    + compararEtiqueta()
+    + esDeBodega()
+    + esDeRegionVitivinicola()
+}
+
+class Siguiendo <<entity>> {
+    - fechaFin
+    - fechaInicio
+    + sosDeAmigo()
+    + sosDeBodega()
+    + sosDeSomelier()
+}
+
+class Enofilo <<entity>> {
+    - apellido
+    - imagenPerfil
+    - nombre
+    + mostrarAmigosSeguidos()
+    +mostrarColeccionFavoritos()
+}
+
+PantImpVinos ..> GestorImpVinos
+PantImpVinos <.. GestorImpVinos
+GestorImpVinos .> Bodega
+Siguiendo --> "0..1" Bodega
+
+Enofilo --> "0..*" Vino
+Siguiendo -> "0..1" Enofilo
+Bodega "1" <- Vino
+@enduml
