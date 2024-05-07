@@ -3,7 +3,7 @@
 class PantImpVinos <<boundary>> {
     - listaBodegas
     - lblBodegas
-    - bodegaElegida
+    - ListaBodegasElegidas
     + opcionImportarVinosBodega()
     + habilitarVentana()
     + pedirSeleccionBodega()
@@ -13,12 +13,18 @@ class PantImpVinos <<boundary>> {
 
 class GestorImpVinos <<control>> {
     - bodegas
-    - bodegaElegida
-    + importarActualizacionVinosBodega()
+    - bodegasElegidas
+    - listadoVinos
+    - listadoEnofilos
+    + obtenerBodegasActualizaciones()
     + buscarBodegas()
     + tomarSeleccionBodega()
     + buscarActualizacionesBodega()
     + finCU()
+}
+
+class IntApiBodega <<boundary>> {
+
 }
 
 class Bodega <<entity>> {
@@ -66,6 +72,7 @@ class Enofilo <<entity>> {
 
 PantImpVinos ..> GestorImpVinos
 PantImpVinos <.. GestorImpVinos
+GestorImpVinos ..> IntApiBodega
 GestorImpVinos .> Bodega
 Siguiendo --> "0..1" Bodega
 

@@ -6,8 +6,12 @@ mainframe sd 5 Importar actualización de vinos de bodega
     control ":GestorImpVinos" as controlador #LightBlue
     entity ":Bodega" as bodegas #Orange
     entity "seleccionado:Bodega" as bodega #LightBlue
-    actor ":Sistema de bodega" as api #LightBlue
+    boundary ":IntApiBodega" as interfaz #LightBlue
+    actor ":ApiBodega" as api #LightBlue
     entity ":Vino" as vinos #Orange
+    entity "seleccionado:Vino" as vino #LightBlue
+    entity ":enofilo" as enofilo #LightBlue
+    entity ":seguido" as seguido #LightBlue
 
     activate AB #LightBlue
 
@@ -17,7 +21,7 @@ mainframe sd 5 Importar actualización de vinos de bodega
 
             deactivate pantalla 
 
-            pantalla -> controlador ++ #LightBlue : importarActualizacionVinosBodega()
+            pantalla -> controlador ++ #LightBlue : obtenerBodegasActualizaciones()
 
 
                 controlador -> controlador ++ #LightBlue : buscarBodegas()
@@ -34,19 +38,41 @@ mainframe sd 5 Importar actualización de vinos de bodega
             deactivate controlador
         deactivate pantalla
     
+        
         AB -> pantalla ++ #LightBlue : tomarSeleccionBodega()
             pantalla -> controlador ++ #LightBlue : tomarSeleccionBodega()
+            loop Mientras haya bodegas seleccionadas    
                 controlador -> controlador ++ #LightBlue : buscarActualizacionesBodega()
                 deactivate controlador
 
-                controlador -> bodega ++ #LightBlue : buscarActualizacionesBodega()
-                    bodega -> api ++ #LightBlue : getVinos()
-                    deactivate api
-                deactivate bodega
+                controlador -> interfaz ++ #LightBlue : buscarActualizacionesBodega()
+
+                    interfaz -> api ++ #LightBlue : getAñada()
+                        deactivate api
+                        interfaz -> api ++ #LightBlue : getImagenEtiqueta()
+                        deactivate api
+                        interfaz -> api ++ #LightBlue : getNombre()
+                        deactivate api
+                        interfaz -> api ++ #LightBlue : getNotaDeCataBodega()
+                        deactivate api
+                        interfaz -> api ++ #LightBlue : getPrecioARS()
+                        deactivate api
+                    deactivate interfaz
+                
 
                 loop Mientras haya vinos para cargar
-                    controlador -> vinos ++ #Orange : * extisteVino()
-                    deactivate vinos
+                    controlador -> bodega ++ #LightBlue : extisteVino()       
+                        bodega -> vinos ++ #Orange : * esVinoNombre()
+                        deactivate vinos
+                        bodega -> vino ++ #LightBlue : setAñada()
+                        deactivate vino
+                        bodega -> vino ++ #LightBlue : setImagenEtiqueta()
+                        deactivate vino
+                        bodega -> vino ++ #LightBlue : setNotaCataBodega()
+                        deactivate vino
+                        bodega -> vino ++ #LightBlue : setPrecioARS()
+                        deactivate vino
+                    deactivate bodega
 
                     controlador -> bodega ++ #LightBlue : crearVino()
                         entity "nuevo:Vino" as nvino
@@ -56,7 +82,15 @@ mainframe sd 5 Importar actualización de vinos de bodega
                 end
 
                 controlador -> pantalla : mostrarListadoVinosImportados()
-
+                controlador -> controlador ++ #LightBlue : enviarNotificaciones()
+                deactivate controlador
+                controlador -> enofilo ++ #LightBlue : tomarEnofilosBodega()
+                    enofilo -> seguido ++ #LightBlue : sosDeBodega()
+                        seguido -> seguido ++ #LightBlue : enviarNotificacion()
+                        deactivate seguido
+                    deactivate seguido
+                deactivate enofilo
+            end
                 controlador -> controlador ++ #LightBlue : finCU()
                 deactivate controlador                
             deactivate controlador
